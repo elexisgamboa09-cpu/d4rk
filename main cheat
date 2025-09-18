@@ -1,0 +1,31 @@
+local weapons = {"Fist", "Sword", "Magic", "Spear", "Dagger"}
+local weaponIndex = 1
+
+coroutine.wrap(function()
+    while true do
+        local weaponName = weapons[weaponIndex] .. "QTE"
+        local args = {
+            true,
+            weaponName
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Information"):WaitForChild("RemoteFunction"):FireServer(unpack(args))
+        
+        weaponIndex = weaponIndex + 1
+        if weaponIndex > #weapons then
+            weaponIndex = 1
+        end
+        
+        task.wait(1.5) 
+    end
+end)()
+
+coroutine.wrap(function()
+    while true do
+        local args = {
+            {true, true},
+            "DodgeMinigame"
+        }
+        game:GetService("ReplicatedStorage").Remotes.Information.RemoteFunction:FireServer(unpack(args))
+        task.wait(0.001)
+    end
+end)()
