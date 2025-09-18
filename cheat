@@ -1,0 +1,81 @@
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+
+local weapons = {"Fist", "Sword", "Magic", "Spear", "Dagger"}
+local selectedWeapon = weapons[1]
+local running = true
+local dodgeRunning = true
+
+-- Create the UI window
+local Window = Rayfield:CreateWindow({
+    Name = "Chest Script",
+    LoadingTitle = "Chest Script",
+    LoadingSubtitle = "by elexisgamboa09-cpu"
+})
+
+local MainTab = Window:CreateTab("Main", 4483362458)
+
+-- Weapon selection dropdown
+MainTab:CreateDropdown({
+    Name = "Select Weapon",
+    Options = weapons,
+    CurrentOption = weapons[1],
+    Callback = function(option)
+        selectedWeapon = option
+        Rayfield:Notify({
+            Title = "Weapon Selected",
+            Content = "Now using: " .. selectedWeapon,
+            Duration = 3
+        })
+    end
+})
+
+-- Stop button for weapon loop
+MainTab:CreateButton({
+    Name = "Stop Weapon Loop",
+    Callback = function()
+        running = false
+        Rayfield:Notify({
+            Title = "Stopped",
+            Content = "Weapon loop stopped.",
+            Duration = 3
+        })
+    end
+})
+
+-- Stop button for dodge loop
+MainTab:CreateButton({
+    Name = "Stop Dodge Loop",
+    Callback = function()
+        dodgeRunning = false
+        Rayfield:Notify({
+            Title = "Stopped",
+            Content = "Dodge loop stopped.",
+            Duration = 3
+        })
+    end
+})
+
+-- Main weapon loop
+coroutine.wrap(function()
+    while running do
+        local weaponName = selectedWeapon .. "QTE"
+        local args = {
+            true,
+            weaponName
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Information"):WaitForChild("RemoteFunction"):FireServer(unpack(args))
+        task.wait(1.5)
+    end
+end)()
+
+-- Dodge minigame loop
+coroutine.wrap(function()
+    while dodgeRunning do
+        local args = {
+            {true, true},
+            "DodgeMinigame"
+        }
+        game:GetService("ReplicatedStorage").Remotes.Information.RemoteFunction:FireServer(unpack(args))
+        task.wait(0.001)
+    end
+end)()
